@@ -25,14 +25,12 @@ app.add_middleware(
 
 MODEL = tf.keras.models.load_model("./models/1")
 
-CLASS_NAMES = ['Early_Blight_Potato',
-               'Healthy_Potato',
-               'Healthy_Sugarcane',
-               'Late_Blight_Potato',
-               'Mosaic_Sugarcane',
-               'RedRot_Sugarcane',
-               'RedRust_Sugarcane',
-               'Yellow_Sugarcane']
+CLASS_NAMES = ['Potato_Early_blight',
+               'Potato_Healthy',
+               'Potato_Late_blight',
+               'Sugarcane_Healthy',
+               'Sugarcane_RedRot',
+               'Sugarcane_RedRust']
 
 
 @app.get("/ping")
