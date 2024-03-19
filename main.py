@@ -23,8 +23,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# MODEL = tf.keras.models.load_model("./models/1")
-MODEL = tf.keras.layers.TFSMLayer("./models/1")
+ MODEL = tf.keras.models.load_model("./models/1")
+# MODEL = tf.keras.layers.TFSMLayer("./models/1")
 CLASS_NAMES = ['Potato_Early_blight',
                'Potato_Healthy',
                'Potato_Late_blight',
