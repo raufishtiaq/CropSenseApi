@@ -21,7 +21,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Define the class names for the predictions
 CLASS_NAMES = ['Potato_Early_blight',
                'Potato_Healthy',
                'Potato_Late_blight',
@@ -29,44 +28,46 @@ CLASS_NAMES = ['Potato_Early_blight',
                'Sugarcane_RedRot',
                'Sugarcane_RedRust']
 
-# Load the TensorFlow model
-model_path = "./models/1"
-model = tf.saved_model.load(model_path)
-
 @app.get("/ping")
 async def ping():
     return "Hello, I am alive"
 
 def read_file_as_image(data) -> np.ndarray:
-    # Read the uploaded file as an image
     image = np.array(Image.open(BytesIO(data)))
     return image
+
+# Define a custom Keras model to load the SavedModel
+class CustomModel(tf.keras.Model):
+    def __init__(self, model_path):
+        super(CustomModel, self).__init__()
+        self.model = tf.saved_model.load(model_path)
+        
+    def call(self, inputs):
+        return self.model(inputs)
+
+# Load the model using CustomModel
+MODEL = CustomModel("./models/1")
 
 @app.post("/predict")
 async def predict(file: UploadFile = File(...)):
     try:
-        # Read the uploaded image file
         image = read_file_as_image(await file.read())
 
-        # Resize the image to match the model input size
+        # Resize the image
         width = 256
         height = 256
         resized_image = Image.fromarray(image).resize((width, height))
         resized_image = np.array(resized_image)
 
-        # Prepare the image for prediction
         img_batch = np.expand_dims(resized_image, 0)
 
-        # Perform inference using the loaded model
-        predictions = model(img_batch)
+        predictions = MODEL.predict(img_batch)
 
-        # Get the predicted class and confidence
         predicted_class = CLASS_NAMES[np.argmax(predictions[0])]
-        confidence = float(np.max(predictions[0]))
-
+        confidence = np.max(predictions[0])
         return {
             'class': predicted_class,
-            'confidence': confidence
+            'confidence': float(confidence)
         }
     except Exception as e:
         print(e)
