@@ -5,7 +5,6 @@ from io import BytesIO
 from PIL import Image
 import tensorflow as tf
 import os
-from fastapi.responses import JSONResponse
 
 app = FastAPI()
 MODEL = tf.keras.models.load_model("./models/1")
