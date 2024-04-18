@@ -4,6 +4,7 @@ import numpy as np
 from io import BytesIO
 from PIL import Image
 import tensorflow as tf
+import os
 
 app = FastAPI()
 
@@ -40,4 +41,4 @@ async def predict(
     }
 
 if __name__ == "__main__":
-    uvicorn.run(app, host='0.0.0.0', port=80)
+    uvicorn.run(app, host='0.0.0.0', port=os.getenv("PORT", default=5000))
